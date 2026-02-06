@@ -1,17 +1,13 @@
 #!/usr/bin/env nextflow
 
-/*
- * Hello World pipeline para probar NF-Orchestrator
- */
-
 process say_hello {
     echo true
 
     input:
-    val name from ["World", "Slurm", "NF-Orchestrator"]
+    val name
 
     output:
-    file "${name}.txt" into results
+    path "${name}.txt"
 
     script:
     """
@@ -21,7 +17,7 @@ process say_hello {
 
 process print_results {
     input:
-    file f from results
+    path f
 
     output:
     stdout
@@ -33,7 +29,8 @@ process print_results {
 }
 
 workflow {
-    say_hello()
-    print_results()
+    names = Channel.of("World", "Slurm", "NF-Orchestrator")
+    results = say_hello(names)
+    print_results(results)
 }
 
