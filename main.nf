@@ -1,13 +1,15 @@
 #!/usr/bin/env nextflow
 
+Channel.from("World", "Slurm", "NF-Orchestrator").set { names }
+
 process say_hello {
     echo true
 
     input:
-    val(name)
+    val name from names
 
     output:
-    path "${name}.txt"
+    file "${name}.txt" into results
 
     script:
     """
@@ -17,7 +19,7 @@ process say_hello {
 
 process print_results {
     input:
-    path(f)
+    file f from results
 
     output:
     stdout
@@ -26,11 +28,5 @@ process print_results {
     """
     cat $f
     """
-}
-
-workflow {
-    names = Channel.of("World", "Slurm", "NF-Orchestrator")
-    results = say_hello(names)
-    print_results(results)
 }
 
