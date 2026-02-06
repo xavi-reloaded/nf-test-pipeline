@@ -4,7 +4,7 @@ process say_hello {
     echo true
 
     input:
-    val name
+    val(name)
 
     output:
     path "${name}.txt"
@@ -17,7 +17,7 @@ process say_hello {
 
 process print_results {
     input:
-    path f
+    path(f)
 
     output:
     stdout
